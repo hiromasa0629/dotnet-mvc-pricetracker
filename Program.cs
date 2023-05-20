@@ -1,21 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
+// using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Initialize ConnectionString to postgres
-var connectionStringBuilder = new NpgsqlConnectionStringBuilder();
-connectionStringBuilder.Host = "localhost";
-connectionStringBuilder.Port = 5432;
-connectionStringBuilder.Pooling = true;
-connectionStringBuilder.Database = builder.Configuration["DbName"];
-connectionStringBuilder.Username = builder.Configuration["DbUser"];
-connectionStringBuilder.Password = builder.Configuration["DbPassword"];
 
-// Establish connection to postgres
-builder.Services.AddDbContext<DefaultDbContext>(options => 
-	options.UseNpgsql(connectionStringBuilder.ConnectionString)
-);
+builder.Services.AddDbContext<DefaultDbContext>();
+// Pass user secrets to DefaultDbContext
+builder.Configuration.AddUserSecrets<DefaultDbContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
