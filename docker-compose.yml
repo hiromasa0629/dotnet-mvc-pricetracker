@@ -1,0 +1,15 @@
+version: "1"
+services:
+  database:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - .env.dev
+    networks:
+      - etherscan
+
+networks:
+  etherscan:
