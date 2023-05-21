@@ -17,7 +17,29 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-		ViewBag.Tokens = _uow.Tokens.GetAll();
+		List<TokenViewModel> newTokens = new List<TokenViewModel>();
+		
+		var tokens = _uow.Tokens.GetAllSortByTotalSupplyDesc();
+		
+		Int64 sum_total_supply = tokens.Sum(item => item.total_supply);
+		
+		foreach (var t in tokens)
+		{
+			TokenViewModel tmp = new TokenViewModel
+			{
+				id = t.id,
+				name = t.name,
+				symbol = t.symbol,
+				total_supply = t.total_supply,
+				contract_address = t.contract_address,
+				total_holders = t.total_holders,
+				total_supply_perc = ((double)t.total_supply / (double)sum_total_supply) * 100
+			};
+			
+			newTokens.Add(tmp);
+		}
+		
+		ViewBag.Tokens = newTokens;
         return View();
     }
 

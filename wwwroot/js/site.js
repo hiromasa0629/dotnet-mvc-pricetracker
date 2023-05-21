@@ -2,36 +2,13 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-$(function () {
-	const data = [
-		{ year: 2011, count: 10 },
-		{ year: 2012, count: 10 },
-		{ year: 2013, count: 10 },
-		{ year: 2014, count: 10 },
-		{ year: 2015, count: 10 },
-	]
+
+function editFillForm(index) {
+	const rowData = tokens[index];
 	
-	var ctx = $("#doughnut");
-	var myChart = new Chart(ctx, {
-		type: 'doughnut',
-		data: {
-			labels: data.map(row => row.year),
-			datasets: [
-				{
-					label: 'PIEEEEE',
-					data: data.map(row => row.count)
-				}
-			]
-		},
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			plugins: {
-				labels: {
-					render: (a) => `${a.label}`,
-					position: 'outside'
-				}
-			}
-		}
-	})
-});
+	$('form input#name').val(rowData.name);
+	$('form input#symbol').val(rowData.symbol);
+	$('form input#contract_address').val(rowData.contract_address);
+	$('form input#total_supply').val(rowData.total_supply);
+	$('form input#total_holders').val(rowData.total_holders);
+}
