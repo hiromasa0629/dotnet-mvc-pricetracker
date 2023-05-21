@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
+using assessment.Models;
 
 public class DefaultDbContext : DbContext
 {
@@ -20,8 +21,17 @@ public class DefaultDbContext : DbContext
 			mysqlConnectionBuilder.UserID = this._configuration["DbUser"];
 			mysqlConnectionBuilder.Password = this._configuration["DbPassword"];
 			mysqlConnectionBuilder.Database = this._configuration["DbName"];
-			optionsBuilder.UseMySQL(mysqlConnectionBuilder.ToString());
+			
+			optionsBuilder.UseMySql(mysqlConnectionBuilder.ToString(), MySqlServerVersion.LatestSupportedServerVersion);
 			base.OnConfiguring(optionsBuilder);
 		}
+	}
+
+	public required DbSet<Token> Tokens { get; set; }
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		modelBuilder.Entity<Token>();
+		base.OnModelCreating(modelBuilder);
 	}
 }
