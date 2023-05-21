@@ -27,5 +27,5 @@ public class DefaultDbContext : DbContext
 		}
 	}
 
-	public required DbSet<Token> Tokens { get; set; }
+	public required DbSet<Token> Token { get; set; }
 }

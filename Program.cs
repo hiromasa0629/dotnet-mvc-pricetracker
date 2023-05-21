@@ -11,6 +11,8 @@ builder.Configuration.AddUserSecrets<DefaultDbContext>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

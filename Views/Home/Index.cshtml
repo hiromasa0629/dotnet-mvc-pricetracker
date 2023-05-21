@@ -1,8 +1,23 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+	ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row flex-wrap">
+	@* @foreach (var item in (IEnumerable<Token>)ViewBag.Tokens)
+	{
+	<div>@item.name</div>
+	} *@
+	<div class="col-md-4 col-sm-12">
+		<h4>Save / Update Token</h4>
+		@await Html.PartialAsync("~/Views/Partials/_TokenForm.cshtml")
+	</div>
+	<div class="col-md-8 col-sm-12">
+		@await Html.PartialAsync("~/Views/Partials/_TokenDoughnutChart.cshtml")
+	</div>
+	
+	<hr class="my-5"/>
+	
+	<div class="px-3">
+		@await Html.PartialAsync("~/Views/Partials/_TokenTable.cshtml", (IEnumerable<Token>)ViewBag.Tokens)
+	</div>
 </div>

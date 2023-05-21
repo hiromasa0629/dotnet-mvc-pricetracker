@@ -7,14 +7,17 @@ namespace assessment.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+	private readonly IUnitOfWork _uow;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IUnitOfWork uow)
     {
         _logger = logger;
+		_uow = uow;
     }
 
     public IActionResult Index()
     {
+		ViewBag.Tokens = _uow.Tokens.GetAll();
         return View();
     }
 
