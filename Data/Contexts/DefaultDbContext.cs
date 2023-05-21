@@ -28,10 +28,4 @@ public class DefaultDbContext : DbContext
 	}
 
 	public required DbSet<Token> Tokens { get; set; }
-
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		modelBuilder.Entity<Token>();
-		base.OnModelCreating(modelBuilder);
-	}
 }
