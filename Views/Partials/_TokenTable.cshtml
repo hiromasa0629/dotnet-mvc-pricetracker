@@ -14,27 +14,39 @@
 				<th scope="col"></th>
 			</tr>
 		</thead>
-		<tbody>
-			@{
-				int rank = 0;
-			}
-			@for (int i = 0; i < Model.Count(); i++)
-			{
-				<tr>
-					<th scope="row">@(rank++ + 1)</th>
-					<td>
-						<a href="#" class="a__symbol" token-id="@Model[i].id">@Model[i].symbol</a>
-					</td>
-					<td>@Model[i].name</td>
-					<td>@Model[i].contract_address</td>
-					<td>@Model[i].total_holders</td>
-					<td>@Model[i].total_supply</td>
-					<td>@Model[i].total_supply_perc%</td>
-					<td>
-						<a href="#" class="a__edit" token-id="@Model[i].id">Edit</a>
-					</td>
-				</tr>
-			}
+		<tbody id="table-body">
+			<tr id="table-row-default">
+				<th scope="row" class="table__row__rank"></th>
+				<td>
+					<a href="#" class="a__symbol table__row__symbol" token-id=""></a>
+				</td>
+				<td class="table__row__name"></td>
+				<td class="table__row__contract_address"></td>
+				<td class="table__row__total_holders"></td>
+				<td class="table__row__total_supply"></td>
+				<td class="table__row__total_supply_perc"></td>
+				<td>
+					<a href="#" class="a__edit table__row__edit" token-id="">Edit</a>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 </div>
+
+<nav aria-label="Page navigation example">
+	<ul class="pagination justify-content-end">
+		<li class="page-item">
+			<a class="page-link" href="#" aria-label="Previous">
+				<span aria-hidden="true">&laquo;</span>
+			</a>
+		</li>
+		<li class="page-item"><a class="page-link" href="#">1</a></li>
+		<li class="page-item"><a class="page-link" href="#">2</a></li>
+		<li class="page-item"><a class="page-link" href="#">3</a></li>
+		<li class="page-item">
+			<a class="page-link" href="#" aria-label="Next">
+				<span aria-hidden="true">&raquo;</span>
+			</a>
+		</li>
+	</ul>
+</nav>

@@ -9,18 +9,6 @@ function renderDoughnut() {
 		}
 	});
 	
-	if (doughnutChart) {
-		doughnutChart.data = {
-			labels: data.map(row => row.name),
-			datasets: [
-				{
-					data: data.map(row => row.total_supply)
-				}
-			]
-		}
-		return ;
-	}
-	
 	// Canvas element
 	var ctx = $("#doughnut");
 	
@@ -50,10 +38,16 @@ function renderDoughnut() {
 		}
 	}
 	
+	if (doughnutChart) {
+		doughnutChart.data = chartData;
+		doughnutChart.options = chartOptions;
+		doughnutChart.update();
+		return ;
+	}
+	
 	doughnutChart = new Chart(ctx, {
 		type: 'doughnut',
 		data: chartData,
 		options: chartOptions
-	})
-	
+	});
 }

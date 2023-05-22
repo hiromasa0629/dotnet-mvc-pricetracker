@@ -1,9 +1,12 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
+/// <reference path="../lib/jquery/dist/jquery.min.js" />
+
 // Write your JavaScript code.
 
 var g_tokens;
+var g_page;
 
 function editFillForm(id) {
 	getDetail(null, id, function(instance, r) {
@@ -19,17 +22,20 @@ function editFillForm(id) {
 	});
 }
 
+
 class Divs {
-	constructor(tokenDetailDiv, dashboardDiv) {
-		this.tokenDetailDiv = tokenDetailDiv;
-		this.dashboardDiv = dashboardDiv;
+	constructor() {
+		this.tokenDetailDiv = $("#token-detail");
+		this.dashboardDiv = $("#dashboard");
 		this.missingIdDiv = $("#error-div");
+		this.defaultTableBody = $("#table-body");
+		this.defaultRow = this.defaultTableBody.find("#table-row-default").hide(); // Hide table row template
 		
 		const pathname = window.location.pathname;
 		if (pathname !== "/detail.aspx") {
 			this.showDashboard();
 		} else {
-			this.showTokenDetail()
+			this.showTokenDetail();
 		}
 	}
 	
@@ -60,6 +66,18 @@ class Divs {
 	}
 	
 	showDashboard() {
+		const urlParams = new URLSearchParams(window.location.search);
+		const urlPage = urlParams.get("page") ?? "1";
+		
+		try {
+			g_page = parseInt(urlPage);
+			if (g_page <= 0) throw "Page must be positive";
+			renderPage(this);
+		} catch (msg) {
+			console.log(msg);
+			this.showError(msg);
+			return ;
+		}
 		this.dashboardDiv.show();
 		this.tokenDetailDiv.hide();
 		this.missingIdDiv.hide();
@@ -70,6 +88,13 @@ class Divs {
 		this.tokenDetailDiv.hide();
 		this.missingIdDiv.show();
 		this.missingIdDiv.text(text);
+	}
+}
+
+class TokenTable {
+	constructor() {
+		this.tableBody = $("#table-body");
+		this.tableBodyRow = $("#table-row-default");
 	}
 }
 
@@ -90,6 +115,7 @@ function getTokens(callback) {
 	$.ajax({
 		url: `${apiUrl}/token`,
 		method: "GET",
+		data: { page: g_page },
 		success: function(res) {
 			callback(res);
 		},
@@ -99,7 +125,12 @@ function getTokens(callback) {
 	})
 }
 
-function submitTokenForm(formData) {
+/**
+ * Handle Form submit
+ * @param {FormData} formData 
+ * @param {Divs} divs 
+ */
+function submitTokenForm(formData, divs) {
 	$.ajax({
 		url: `${apiUrl}/token`,
 		method: "POST",
@@ -107,7 +138,7 @@ function submitTokenForm(formData) {
 		contentType: false,
 		processData: false,
 		success: function (res) {
-			renderPage();
+			divs.showDashboard();
 		},
 		error: function (xhr, status, error) {
 			console.log(xhr.responseJSON.Message);
@@ -115,36 +146,65 @@ function submitTokenForm(formData) {
 	})
 }
 
+
+/**
+ * Render page by getting tokens and updating doughnut and table
+ * @param {Divs} divs
+ */
 function renderPage(divs) {
+	
 	getTokens(function(res) {
-		if (res.error === "error") {
+		if (res.status === "error") {
 			divs.showError("Error");
+			console.error(res);
 			return;
 		}
-		
+		// Set token to global state
 		g_tokens = res;
+		
 		console.log(g_tokens);
+		
 		renderDoughnut();
+		renderTable(divs);
+		registerEvent(divs);
 	})
 }
 
-$(function() {
-	const divs = new Divs($("#token-detail"), $("#dashboard"));
-	
-	renderPage(divs);
-	
-	window.addEventListener("popstate", function(e) {
-		if (this.window.location.pathname === "/detail.aspx") {
-			divs.showTokenDetail();
-		} else {
-			divs.showDashboard();
+/**
+ * Render table by cloning table row template
+ * @param {Divs} divs
+ */
+function renderTable(divs) {
+		var rank = 1 + ((g_page - 1) * 10);
+		const tableBody = divs.defaultTableBody.clone(true, true);
+		for (const t of g_tokens) {
+			const row = divs.defaultRow.clone(true, true);
+			
+			row.show();
+			row.attr("id", `${row.attr("id")}-${t.id}`);
+			row.find(".table__row__rank").text(rank++);
+			row.find(".table__row__symbol").text(t.symbol).attr("token-id", t.id);
+			row.find(".table__row__name").text(t.name);
+			row.find(".table__row__contract_address").text(t.contract_address);
+			row.find(".table__row__total_holders").text(t.total_holders);
+			row.find(".table__row__total_supply").text(t.total_supply);
+			row.find(".table__row__total_supply_perc").text(`${t.total_supply_perc}%`);
+			row.find(".table__row__edit").attr("token-id", t.id);
+			tableBody.append(row);
 		}
-	})
-	
+		$('#table-body').replaceWith(tableBody);
+}
+
+/**
+ * 
+ * @param {Divs} divs 
+ */
+function registerEvent(divs) {
 	// Fill edit form
 	$(".a__edit").on("click", function(e) {
 		e.preventDefault();
 		editFillForm($(this).attr("token-id"));
+		$("form").get(0).scrollIntoView({behavior: "smooth"});
 	});
 	
 	// Show detail page
@@ -156,9 +216,23 @@ $(function() {
 	
 	$("#token-form").on("submit", function(e) {
 		e.preventDefault();
-		
-		const formData = new FormData(this);
-		submitTokenForm(formData);
-		
+		submitTokenForm(new FormData(this), divs);
+	})
+}
+
+
+// Docuemnt ready
+$(function() {
+	g_page = 1; // Default page
+	
+	// Handle all HTML Element
+	const divs = new Divs();
+	
+	window.addEventListener("popstate", function(e) {
+		if (this.window.location.pathname === "/detail.aspx") {
+			divs.showTokenDetail();
+		} else {
+			divs.showDashboard();
+		}
 	})
 });

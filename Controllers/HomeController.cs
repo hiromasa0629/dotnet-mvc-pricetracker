@@ -43,6 +43,8 @@ public class HomeController : Controller
 			newTokens.Add(tmp);
 		}
 		
+		Console.WriteLine(newTokens.Count());
+		
 		ViewBag.Tokens = newTokens;
         return View();
     }

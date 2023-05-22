@@ -24,8 +24,33 @@ public class TokenApiController : ControllerBase
 	[HttpGet]
 	public IActionResult GetTokens()
 	{
-		var res = _uow.Tokens.GetAll();
-		return Ok(res);
+		var tokens = _uow.Tokens.GetAllSortByTotalSupplyDesc();
+		
+		List<TokenViewModel> newTokens = new List<TokenViewModel>();
+		
+		UInt64 sum_total_supply = 0;
+		foreach (var t in tokens)
+		{
+			sum_total_supply += t.total_supply;
+		}
+		
+		foreach (var t in tokens)
+		{
+			TokenViewModel tmp = new TokenViewModel
+			{
+				id = t.id,
+				name = t.name,
+				symbol = t.symbol,
+				total_supply = t.total_supply,
+				contract_address = t.contract_address,
+				total_holders = t.total_holders,
+				total_supply_perc = ((double)t.total_supply / (double)sum_total_supply) * 100
+			};
+			
+			newTokens.Add(tmp);
+		}
+		
+		return Ok(newTokens);
 	}
 	
 	[HttpPost]
