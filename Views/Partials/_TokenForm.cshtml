@@ -1,4 +1,4 @@
-<form action="">
+<form action="" id="token-form">
 	<div class="row g-3 align-items-center">
 		<div class="col-5">
 			<div class="my-2">
@@ -22,19 +22,19 @@
 		</div>
 		<div class="col-7">
 			<div class="my-2">
-				<input type="text" placeholder="Name" class="form-control" id="name" />
+				<input type="text" placeholder="Name" class="form-control" id="name" name="name" required />
 			</div>
 			<div class="my-2">
-				<input type="text" placeholder="Symbol" class="form-control" id="symbol" />
+				<input type="text" placeholder="Symbol" class="form-control" id="symbol" name="symbol" required/>
 			</div>
 			<div class="my-2">
-				<input type="text" placeholder="Contract Address" class="form-control" id="contract_address" />
+				<input type="text" placeholder="Contract Address" class="form-control" id="contract_address" name="contract_address" required />
 			</div>
 			<div class="my-2">
-				<input type="number" placeholder="Total Supply" class="form-control" id="total_supply" />
+				<input type="number" placeholder="Total Supply" class="form-control" id="total_supply" name="total_supply" required />
 			</div>
 			<div class="my-2">
-				<input type="number" placeholder="Total Holders" class="form-control" id="total_holders">
+				<input type="number" placeholder="Total Holders" class="form-control" id="total_holders" name="total_holders" required />
 			</div>
 			<div class="my-2">
 				<button type="submit" class="btn btn-primary">Save</button>

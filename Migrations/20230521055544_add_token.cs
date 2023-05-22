@@ -10,9 +10,10 @@ namespace assessment.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+			// Added UNIQUE to symbol
 			migrationBuilder.Sql(@"CREATE TABLE `Token` (
 				`id` INT(11) NOT NULL AUTO_INCREMENT,
-				`symbol` VARCHAR(5) NOT NULL COLLATE 'utf8_general_ci',
+				`symbol` VARCHAR(5) NOT NULL UNIQUE COLLATE 'utf8_general_ci',
 				`name` VARCHAR(50) NOT NULL COLLATE 'utf8_general_ci',
 				`total_supply` BIGINT(20) NOT NULL,
 				`contract_address` VARCHAR(66) NOT NULL COLLATE 'utf8_general_ci',

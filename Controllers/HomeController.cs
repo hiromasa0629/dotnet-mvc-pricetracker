@@ -21,7 +21,11 @@ public class HomeController : Controller
 		
 		var tokens = _uow.Tokens.GetAllSortByTotalSupplyDesc();
 		
-		Int64 sum_total_supply = tokens.Sum(item => item.total_supply);
+		UInt64 sum_total_supply = 0;
+		foreach (var t in tokens)
+		{
+			sum_total_supply += t.total_supply;
+		}
 		
 		foreach (var t in tokens)
 		{

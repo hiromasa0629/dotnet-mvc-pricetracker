@@ -3,6 +3,8 @@
 
 // Write your JavaScript code.
 
+var g_tokens;
+
 function editFillForm(id) {
 	getDetail(null, id, function(instance, r) {
 		if (r.status !== "error") {
@@ -21,7 +23,7 @@ class Divs {
 	constructor(tokenDetailDiv, dashboardDiv) {
 		this.tokenDetailDiv = tokenDetailDiv;
 		this.dashboardDiv = dashboardDiv;
-		this.missingIdDiv = $("#missing-id");
+		this.missingIdDiv = $("#error-div");
 		
 		const pathname = window.location.pathname;
 		if (pathname !== "/detail.aspx") {
@@ -84,8 +86,52 @@ function getDetail(instance, id, callback) {
 	})
 }
 
+function getTokens(callback) {
+	$.ajax({
+		url: `${apiUrl}/token`,
+		method: "GET",
+		success: function(res) {
+			callback(res);
+		},
+		error: function(xhr, status, error) {
+			callback({ xhr, status, error });
+		}
+	})
+}
+
+function submitTokenForm(formData) {
+	$.ajax({
+		url: `${apiUrl}/token`,
+		method: "POST",
+		data:  formData,
+		contentType: false,
+		processData: false,
+		success: function (res) {
+			renderPage();
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr.responseJSON.Message);
+		}
+	})
+}
+
+function renderPage(divs) {
+	getTokens(function(res) {
+		if (res.error === "error") {
+			divs.showError("Error");
+			return;
+		}
+		
+		g_tokens = res;
+		console.log(g_tokens);
+		renderDoughnut();
+	})
+}
+
 $(function() {
 	const divs = new Divs($("#token-detail"), $("#dashboard"));
+	
+	renderPage(divs);
 	
 	window.addEventListener("popstate", function(e) {
 		if (this.window.location.pathname === "/detail.aspx") {
@@ -107,4 +153,12 @@ $(function() {
 		window.history.pushState({}, "", `/detail.aspx?id=${$(this).attr("token-id")}`);
 		divs.showTokenDetail();
 	});
+	
+	$("#token-form").on("submit", function(e) {
+		e.preventDefault();
+		
+		const formData = new FormData(this);
+		submitTokenForm(formData);
+		
+	})
 });

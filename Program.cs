@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using AppHttpExceptionHandling.Middleware;
 // using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Configuration.AddUserSecrets<DefaultDbContext>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<AppHttpExceptionMiddleware>();
 
 var app = builder.Build();
 
@@ -22,6 +24,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseMiddleware<AppHttpExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

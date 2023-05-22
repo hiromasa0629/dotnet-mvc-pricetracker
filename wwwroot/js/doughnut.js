@@ -1,12 +1,25 @@
-$(function () {
-	
-	// `tokens` from global variable
-	const data = tokens.map((v) => {
+var doughnutChart;
+
+function renderDoughnut() {
+	// `g_tokens` from global variable
+	const data = g_tokens.map((v) => {
 		return {
 			name: v.name,
 			total_supply: v.total_supply
 		}
 	});
+	
+	if (doughnutChart) {
+		doughnutChart.data = {
+			labels: data.map(row => row.name),
+			datasets: [
+				{
+					data: data.map(row => row.total_supply)
+				}
+			]
+		}
+		return ;
+	}
 	
 	// Canvas element
 	var ctx = $("#doughnut");
@@ -37,10 +50,10 @@ $(function () {
 		}
 	}
 	
-	var myChart = new Chart(ctx, {
+	doughnutChart = new Chart(ctx, {
 		type: 'doughnut',
 		data: chartData,
 		options: chartOptions
 	})
 	
-});
+}

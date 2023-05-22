@@ -22,18 +22,6 @@
 	@await Html.PartialAsync("~/Views/Partials/_TokenDetail.cshtml")
 </div>
 
-<div id="missing-id">
-	Missing id
+<div id="error-div">
+
 </div>
-
-@section Scripts {
-	<script>
-		// Doughnut chart data
-		const tokens = @Html.Raw(Json.Serialize(ViewBag.Tokens));
-	</script>
-		
-	<script>
-
-	</script>
-	<script src="~/js/doughnut.js"></script>
-}
