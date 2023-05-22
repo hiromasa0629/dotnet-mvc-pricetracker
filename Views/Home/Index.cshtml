@@ -2,7 +2,7 @@
 	ViewData["Title"] = "Home Page";
 }
 
-<div class="row flex-wrap gy-5">
+<div class="row flex-wrap gy-5" id="dashboard">
 	<div class="col-md-4 col-sm-12">
 		<h4>Save / Update Token</h4>
 		@await Html.PartialAsync("~/Views/Partials/_TokenForm.cshtml")
@@ -18,48 +18,22 @@
 	</div>
 </div>
 
+<div id="token-detail">
+	@await Html.PartialAsync("~/Views/Partials/_TokenDetail.cshtml")
+</div>
+
+<div id="missing-id">
+	Missing id
+</div>
+
 @section Scripts {
-	@* Doughnut chart js *@
 	<script>
+		// Doughnut chart data
 		const tokens = @Html.Raw(Json.Serialize(ViewBag.Tokens));
 	</script>
-	
-	@* Fill edit form *@
-	<script>
-		$(document).on("click", ".a__edit", function(e) {
-			e.preventDefault();
-			editFillForm($(this).attr("row-index"));
-		})
-	</script>
-	
-	@* Show detail page *@
-	<script>
-		$(document).on("click", ".a__symbol", function(e) {
-			e.preventDefault();
-			var tokenId = $(this).attr("token-id");
-			
-			window.history.pushState({}, "", `/detail.aspx?id=${tokenId}`);
-			
-			const urlParams = new URLSearchParams(window.location.search);
-			const urlId = urlParams.get("id");
-			
-			$.ajax({
-				url: `${apiUrl}/token/${urlId}`,
-				method: "GET",
-				success: function(res) {
-					console.log(res);
-				},
-				error: function(xhr, status, error) {
-					console.log("Error:", error);
-				}
-			})
-		})
 		
-		window.addEventListener('popstate', function(e) {
-			if (window.location.pathname === "/detail.aspx") {
-				
-			}
-		})
+	<script>
+
 	</script>
 	<script src="~/js/doughnut.js"></script>
 }

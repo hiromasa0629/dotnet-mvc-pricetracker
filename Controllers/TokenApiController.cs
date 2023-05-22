@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 [ApiController]
 [Route("api/token")]
@@ -15,7 +14,7 @@ public class TokenApiController : ControllerBase
 	[HttpGet("{id}")]
 	public IActionResult Test(int id)
 	{
-		var res = JsonConvert.SerializeObject(_uow.Tokens.GetById(id));
+		var res = _uow.Tokens.GetById(id);
 		return Ok(res);
 	}
 }
