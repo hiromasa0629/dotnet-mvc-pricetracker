@@ -30,6 +30,8 @@ class Divs {
 		this.missingIdDiv = $("#error-div");
 		this.defaultTableBody = $("#table-body");
 		this.defaultRow = this.defaultTableBody.find("#table-row-default").hide(); // Hide table row template
+		this.defaultPaginationList = $("#table-pagination ul");
+		this.defaultPaginationListItem = $("#pagination-list-item");
 		
 		const pathname = window.location.pathname;
 		if (pathname !== "/detail.aspx") {
@@ -115,7 +117,6 @@ function getTokens(callback) {
 	$.ajax({
 		url: `${apiUrl}/token`,
 		method: "GET",
-		data: { page: g_page },
 		success: function(res) {
 			callback(res);
 		},
@@ -176,8 +177,10 @@ function renderPage(divs) {
  */
 function renderTable(divs) {
 		var rank = 1 + ((g_page - 1) * 10);
+		// Slice 10 items/page
+		const tokens = g_tokens.slice((g_page - 1) * 10, ((g_page - 1) * 10) + 10);
 		const tableBody = divs.defaultTableBody.clone(true, true);
-		for (const t of g_tokens) {
+		for (const t of tokens) {
 			const row = divs.defaultRow.clone(true, true);
 			
 			row.show();
@@ -193,6 +196,38 @@ function renderTable(divs) {
 			tableBody.append(row);
 		}
 		$('#table-body').replaceWith(tableBody);
+		renderPagination(divs);
+}
+
+/**
+ * 
+ * @param {Divs} divs 
+ */
+function renderPagination(divs) {
+	
+	const newList = divs.defaultPaginationList.clone(true, true);
+	const totalPagesNeeded = Math.floor(g_tokens.length / 10) + 1;
+	const pageStart = g_page - 2 < 1 ? 1 : g_page - 2;
+	const pageEnd = g_page + 2 > totalPagesNeeded ? totalPagesNeeded : g_page + 2;
+	
+	console.log(pageStart, pageEnd);
+	
+	for (let i = pageEnd; i >= pageStart; i--)
+	{
+		const middle = Math.ceil(newList.children("li").length / 2);
+		console.log(middle);
+		const listItem = divs.defaultPaginationListItem.clone(true, true);
+		listItem.show();
+		listItem.removeAttr("id");
+		listItem.find("a").attr("table-page", i).text(i);
+		if (i === g_page) listItem.addClass("active");
+		newList.find(`li:nth-child(${middle})`).after(listItem);
+	}
+	
+	if (g_page === 1) newList.find("li:first-child").addClass("disabled");
+	if (g_page === totalPagesNeeded) newList.find("li:last-child").addClass("disabled");
+	
+	$("#table-pagination").html(newList);
 }
 
 /**
@@ -214,9 +249,32 @@ function registerEvent(divs) {
 		divs.showTokenDetail();
 	});
 	
+	// Handle submit button
 	$("#token-form").on("submit", function(e) {
 		e.preventDefault();
 		submitTokenForm(new FormData(this), divs);
+	})
+	
+	// Handle pagination previous
+
+	$("a.page-link[aria-label='Previous']").on("click", function(e) {
+		e.preventDefault();
+		window.history.pushState({}, "", `/?page=${g_page - 1}`);
+		divs.showDashboard();
+	})
+	
+	$("a.page-link[aria-label='Next']").on("click", function(e) {
+		e.preventDefault();
+		window.history.pushState({}, "", `/?page=${g_page + 1}`);
+		divs.showDashboard();
+	})
+	
+	$(".page-link-num").each(function(e) {
+		$(this).on("click", function(item) {
+			item.preventDefault();
+			window.history.pushState({}, "", `/?page=${$(this).attr("table-page")}`);
+			divs.showDashboard();
+		})
 	})
 }
 
