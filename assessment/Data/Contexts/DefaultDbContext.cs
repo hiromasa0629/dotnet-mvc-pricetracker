@@ -18,9 +18,9 @@ public class DefaultDbContext : DbContext
 			mysqlConnectionBuilder.Server = "localhost";
 			mysqlConnectionBuilder.Port = 3306;
 			mysqlConnectionBuilder.Pooling = true;
-			mysqlConnectionBuilder.UserID = this._configuration["DbUser"];
-			mysqlConnectionBuilder.Password = this._configuration["DbPassword"];
-			mysqlConnectionBuilder.Database = this._configuration["DbName"];
+			mysqlConnectionBuilder.UserID = Environment.GetEnvironmentVariable("DbUser");
+			mysqlConnectionBuilder.Password = Environment.GetEnvironmentVariable("DbPassword");
+			mysqlConnectionBuilder.Database = Environment.GetEnvironmentVariable("DbName");
 			
 			optionsBuilder.UseMySql(mysqlConnectionBuilder.ToString(), MySqlServerVersion.LatestSupportedServerVersion);
 			base.OnConfiguring(optionsBuilder);
