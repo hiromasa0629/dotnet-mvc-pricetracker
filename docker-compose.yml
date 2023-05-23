@@ -15,32 +15,32 @@ services:
       interval: 10s
       timeout: 2s
       retries: 10
-  # console:
-  #   build: ./console
-  #   image: dotnet-console:1
-  #   container_name: dotnet-console
-  #   restart: always
-  #   env_file:
-  #     - .env.dev
-  #   networks:
-  #     - price_tracker
-  #   depends_on:
-  #     database: 
-  #       condition: service_healthy
-  # assessment:
-  #   build: ./assessment
-  #   image: assessment:1
-  #   container_name: assessment
-  #   restart: always
-  #   ports:
-  #     - 5283:5283
-  #   env_file:
-  #     - .env.dev
-  #   networks:
-  #     - price_tracker
-  #   depends_on:
-  #     database:
-  #       condition: service_healthy
+  console:
+    build: ./console
+    image: dotnet-console:1
+    container_name: dotnet-console
+    restart: always
+    env_file:
+      - .env.dev
+    networks:
+      - price_tracker
+    depends_on:
+      database: 
+        condition: service_healthy
+  assessment:
+    build: ./assessment
+    image: assessment:1
+    container_name: assessment
+    restart: always
+    ports:
+      - 5283:5283
+    env_file:
+      - .env.dev
+    networks:
+      - price_tracker
+    depends_on:
+      database:
+        condition: service_healthy
 
 networks:
   price_tracker:
