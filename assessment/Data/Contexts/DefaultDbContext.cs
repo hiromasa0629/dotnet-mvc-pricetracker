@@ -15,12 +15,14 @@ public class DefaultDbContext : DbContext
 		if (!optionsBuilder.IsConfigured)
 		{
 			var mysqlConnectionBuilder = new MySqlConnectionStringBuilder();
-			mysqlConnectionBuilder.Server = "localhost";
+			mysqlConnectionBuilder.Server = Environment.GetEnvironmentVariable("MYSQL_SERVER") ?? "localhost" ;
 			mysqlConnectionBuilder.Port = 3306;
 			mysqlConnectionBuilder.Pooling = true;
-			mysqlConnectionBuilder.UserID = Environment.GetEnvironmentVariable("DbUser");
-			mysqlConnectionBuilder.Password = Environment.GetEnvironmentVariable("DbPassword");
-			mysqlConnectionBuilder.Database = Environment.GetEnvironmentVariable("DbName");
+			mysqlConnectionBuilder.UserID = Environment.GetEnvironmentVariable("MYSQL_USER");
+			mysqlConnectionBuilder.Password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
+			mysqlConnectionBuilder.Database = Environment.GetEnvironmentVariable("MYSQL_DATABASE");
+			
+			Console.WriteLine(mysqlConnectionBuilder.ToString());
 			
 			optionsBuilder.UseMySql(mysqlConnectionBuilder.ToString(), MySqlServerVersion.LatestSupportedServerVersion);
 			base.OnConfiguring(optionsBuilder);

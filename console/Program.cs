@@ -18,6 +18,14 @@ class Program
 	
 	static void Main()
 	{
+		// var timer = new Timer(state => UpdateToken(), null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+		
+		// Console.ReadLine();
+		UpdateToken();
+	}
+	
+	static void UpdateToken()
+	{
 		HttpClient client = new HttpClient();
 		client.BaseAddress = new Uri(URL);
 		client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -29,14 +37,16 @@ class Program
 		
 		// Construct Mysql ConnectionString
 		var mysqlConnectionBuilder = new MySqlConnectionStringBuilder();
-		mysqlConnectionBuilder.Server = "localhost";
+		mysqlConnectionBuilder.Server = Environment.GetEnvironmentVariable("MYSQL_SERVER") ?? "localhost" ;
 		mysqlConnectionBuilder.Port = 3306;
 		mysqlConnectionBuilder.Pooling = true;
-		mysqlConnectionBuilder.UserID = Environment.GetEnvironmentVariable("DbUser");
-		mysqlConnectionBuilder.Password = Environment.GetEnvironmentVariable("DbPassword");
-		mysqlConnectionBuilder.Database = Environment.GetEnvironmentVariable("DbName");
+		mysqlConnectionBuilder.UserID = Environment.GetEnvironmentVariable("MYSQL_USER");
+		mysqlConnectionBuilder.Password = Environment.GetEnvironmentVariable("MYSQL_PASSWORD");
+		mysqlConnectionBuilder.Database = Environment.GetEnvironmentVariable("MYSQL_DATABASE");
 		
 		List<string> allSymbols = new List<string>();
+		
+		Console.WriteLine(mysqlConnectionBuilder.ToString());
 		
 		// Get all token symbol and add them to a List
 		using (var connection = new MySqlConnection(mysqlConnectionBuilder.ToString()))
