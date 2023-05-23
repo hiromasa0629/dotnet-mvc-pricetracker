@@ -58,10 +58,12 @@ public class TokenApiController : ControllerBase
 	public IActionResult CreateOrUpdateToken([FromForm] Token body)
 	{
 		Token? token = this._uow.Tokens.Find(t => t.symbol == body.symbol).FirstOrDefault();
+		string msg = "";
 		
 		if (token == null) // Create new record if symbol does not exist
 		{
 			_uow.Tokens.Add(body);
+			msg = "Successfully created!";
 		}
 		else
 		{
@@ -69,11 +71,12 @@ public class TokenApiController : ControllerBase
 			token.contract_address = body.contract_address;
 			token.total_holders = body.total_holders;
 			token.total_supply = body.total_supply;
+			msg = $"Successfully updated {body.symbol}!";
 		}
 		
 		_uow.Complete();
 		
-		return Ok();
+		return Ok(msg);
 	}
 	
 	[HttpGet("export")]

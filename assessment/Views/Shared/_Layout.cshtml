@@ -6,12 +6,12 @@
     <title>@ViewData["Title"] - assessment</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/assessment.styles.css" asp-append-version="true" />
+	<Link rel="stylesheet" href="~/css/toastr.min.css"></Link>
 </head>
 <body>
 	<header>
 		<div class="row justify-content-between px-5 py-3 border-top border-2">
-			<div class="col-auto">
+			<div class="col-auto" style="cursor: pointer;" id="site-title">
 				Etherscan
 			</div>
 			<div class="col-auto">
@@ -26,6 +26,7 @@
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/lib/toastr.min.js"></script>
 	<script src="~/lib/chart.umd.js"></script>
 	<script src="~/lib/chartjs-plugin-labels.min.js"></script>
 	<script src="~/js/doughnut.js"></script>

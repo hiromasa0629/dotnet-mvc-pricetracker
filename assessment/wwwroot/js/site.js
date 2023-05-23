@@ -2,6 +2,7 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 /// <reference path="../lib/jquery/dist/jquery.min.js" />
+/// <reference path="../lib/toastr.min.js" />
 
 // Write your JavaScript code.
 
@@ -76,7 +77,6 @@ class Divs {
 			if (g_page <= 0) throw "Page must be positive";
 			renderPage(this);
 		} catch (msg) {
-			console.log(msg);
 			this.showError(msg);
 			return ;
 		}
@@ -140,9 +140,11 @@ function submitTokenForm(formData, divs) {
 		processData: false,
 		success: function (res) {
 			divs.showDashboard();
+			toastr.success(res);
 		},
 		error: function (xhr, status, error) {
-			console.log(xhr.responseJSON.Message);
+			console.error(xhr.responseJSON.Message);
+			toastr.error(xhr.responseJSON.Message);
 		}
 	})
 }
@@ -162,8 +164,6 @@ function renderPage(divs) {
 		}
 		// Set token to global state
 		g_tokens = res;
-		
-		console.log(g_tokens);
 		
 		renderDoughnut();
 		renderTable(divs);
@@ -210,12 +210,9 @@ function renderPagination(divs) {
 	const pageStart = g_page - 2 < 1 ? 1 : g_page - 2;
 	const pageEnd = g_page + 2 > totalPagesNeeded ? totalPagesNeeded : g_page + 2;
 	
-	console.log(pageStart, pageEnd);
-	
 	for (let i = pageEnd; i >= pageStart; i--)
 	{
 		const middle = Math.ceil(newList.children("li").length / 2);
-		console.log(middle);
 		const listItem = divs.defaultPaginationListItem.clone(true, true);
 		listItem.show();
 		listItem.removeAttr("id");
@@ -282,6 +279,10 @@ function registerEvent(divs) {
 // Docuemnt ready
 $(function() {
 	g_page = 1; // Default page
+	toastr.options = {
+		"preventDuplicates": true,
+		"preventOpenDuplicates": true
+	};
 	
 	// Handle all HTML Element
 	const divs = new Divs();
@@ -294,16 +295,8 @@ $(function() {
 		}
 	})
 	
-	// $("#export-btn").on("click", function(e) {
-	// 	$.ajax({
-	// 		url: `${apiUrl}/token/export`,
-	// 		method: "GET",
-	// 		success: function (res) {
-	// 			console.log(res);
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error({ xhr, status, error });
-	// 		}
-	// 	})
-	// })
+	$("#site-title").on("click", function (e) {
+		if (window.location.pathname !== "/") window.history.pushState({}, "", "/");
+		divs.showDashboard();
+	})
 });
