@@ -1,15 +1,19 @@
 # Assessment
 
+## Requirement (during development)
+- Docker Desktop 4.18
+
 ## Setup
-Establish connection to database
+1. Clone repository
+2. Run
+```bash
+docker compose build && docker compose up -d
 ```
-$ dotnet user-secrets init
-$ dotnet user-secrets set "DbPassword" "1234"
-$ dotnet user-secrets set "DbUser" "user"
-$ dotnet user-secrets set "DbName" "assessment"
-```
+
+<img src="dashboard.png" width="600"/>
 
 ## Reference
 1. [Model Validation](https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-7.0)
 2. [Global exception handling](https://blog.christian-schou.dk/how-to-do-global-exception-handling-in-net-6-and-7/)
 3. [Middleware](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/write?view=aspnetcore-7.0)
+4. [CsvHelper](https://joshclose.github.io/CsvHelper/getting-started/#writing-a-csv-file)
