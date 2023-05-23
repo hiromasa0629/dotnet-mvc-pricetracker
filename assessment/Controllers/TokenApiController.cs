@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using assessment.Models;
-using AppHttpExceptionHandling.Exceptions;
-using System.Net;
+using CsvHelper;
+using CsvHelper.Configuration;
+using System.Globalization;
 
 [ApiController]
 [Route("api/token")]
@@ -73,5 +74,21 @@ public class TokenApiController : ControllerBase
 		_uow.Complete();
 		
 		return Ok();
+	}
+	
+	[HttpGet("export")]
+	public IActionResult ExportCSV()
+	{
+		List<Token> tokens = _uow.Tokens.GetAll().ToList();
+		
+		var stream = new MemoryStream();
+		using (var writer = new StreamWriter(stream, leaveOpen: true))
+		{
+			var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+			csv.WriteRecords(tokens);
+			writer.Flush();
+		}
+		stream.Position = 0;
+		return File(stream, "application/octet-stream", "Tokens.csv");
 	}
 }

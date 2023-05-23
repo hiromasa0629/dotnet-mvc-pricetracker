@@ -293,4 +293,17 @@ $(function() {
 			divs.showDashboard();
 		}
 	})
+	
+	// $("#export-btn").on("click", function(e) {
+	// 	$.ajax({
+	// 		url: `${apiUrl}/token/export`,
+	// 		method: "GET",
+	// 		success: function (res) {
+	// 			console.log(res);
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			console.error({ xhr, status, error });
+	// 		}
+	// 	})
+	// })
 });
