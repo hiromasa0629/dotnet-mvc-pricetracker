@@ -2,6 +2,7 @@
 
 ## Requirement (during development)
 - Docker Desktop 4.18
+- dotnet sdk 7.0.302
 
 ## Setup
 1. Clone repository
